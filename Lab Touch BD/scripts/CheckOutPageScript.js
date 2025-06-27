@@ -1,4 +1,4 @@
-import {cartItems} from '../Data/cart.js';
+import {cartItems, saveCartToStorage} from '../Data/cart.js';
 
 // Calculate totals
 function calculateTotals() {
@@ -16,7 +16,6 @@ function updateQuantity(itemId, newQuantity) {
         removeItem(itemId);
         return;
     }
-
     const item = cartItems.find(item => item.id === itemId);
     if (item) {
         item.quantity = newQuantity;
@@ -53,7 +52,7 @@ function generateCartItemHTML(item) {
                             </svg>
                         </button>
                     </div>
-                    <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+                    <button class="remove-btn js_RemoveButton" onclick="removeItem(${item.id})">Remove</button>
                 </div>
             </div>
             <div class="item-total">$${(item.price * item.quantity).toFixed(2)}</div>
@@ -102,19 +101,6 @@ function proceedToCheckout() {
     // In a real app, this would redirect to checkout page
 }
 
-// Load cart from localStorage (if available)
-function loadCartFromStorage() {
-    const savedCart = localStorage.getItem('shoppingCart');
-    if (savedCart) {
-        cartItems = JSON.parse(savedCart);
-    }
-}
-
-// Save cart to localStorage
-function saveCartToStorage() {
-    localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
-}
-
 // Override update and remove functions to save to storage
 const originalUpdateQuantity = updateQuantity;
 const originalRemoveItem = removeItem;
@@ -128,6 +114,4 @@ removeItem = function(itemId) {
     originalRemoveItem(itemId);
     saveCartToStorage();
 };
-// Initialize cart
-loadCartFromStorage();
 renderCart();
