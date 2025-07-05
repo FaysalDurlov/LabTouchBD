@@ -46,7 +46,17 @@ body {
 .back-to-shop:hover {
     color: #2563eb;
 }
-
+.LabTouch-header-Logo {
+    display: inline-block;
+    height: 80px;         /* Set the space you want */
+    width: 200px;          /* Set width as needed */
+  }
+  
+  .LabTouch-header-Logo img {
+    height: 100%;          /* Fill the container vertically */
+    width: auto;           /* Keep aspect ratio */
+    object-fit: contain;   /* No cropping, scale image inside box */
+  }
 /* Main Content */
 .main {
     max-width: 1280px;

@@ -40,8 +40,8 @@ function generateProductCard(product) {
                     <span class="reviews-count">(${product.reviews})</span>
                 </div>
                 <div class="product-price">
-                    <span class="current-price">$${product.price}</span>
-                    ${product.originalPrice ? `<span class="original-price">$${product.originalPrice}</span>` : ''}
+                    <span class="current-price">BDT ${product.price}</span>
+                    ${product.originalPrice ? `<span class="original-price">BDT ${product.originalPrice}</span>` : ''}
                 </div>
                 <button class="add-to-cart" onclick="addToCart(${product.id})">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

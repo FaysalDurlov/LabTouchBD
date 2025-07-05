@@ -36,7 +36,7 @@ function generateCartItemHTML(item) {
             <div class="item-image">${item.image}</div>
             <div class="item-details">
                 <div class="item-name">${item.name}</div>
-                <div class="item-price">$${item.price.toFixed(2)} each</div>
+                <div class="item-price">BDT ${item.price.toFixed(2)} each</div>
                 <div class="item-actions">
                     <div class="quantity-controls">
                         <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>
@@ -55,7 +55,7 @@ function generateCartItemHTML(item) {
                     <button class="remove-btn js_RemoveButton" onclick="removeItem(${item.id})">Remove</button>
                 </div>
             </div>
-            <div class="item-total">$${(item.price * item.quantity).toFixed(2)}</div>
+            <div class="item-total">BDT ${(item.price * item.quantity).toFixed(2)}</div>
         </div>
     `;
 }
@@ -83,10 +83,10 @@ function renderCart() {
 
     // Update totals
     const { subtotal, shipping, tax, total } = calculateTotals();
-    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('shipping').textContent = shipping > 0 ? `$${shipping.toFixed(2)}` : 'Free';
-    document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('subtotal').textContent = `BDT ${subtotal.toFixed(2)}`;
+    document.getElementById('shipping').textContent = shipping > 0 ? `BDT ${shipping.toFixed(2)}` : 'Free';
+    document.getElementById('tax').textContent = `BDT ${tax.toFixed(2)}`;
+    document.getElementById('total').textContent = `BDT ${total.toFixed(2)}`;
 
     // Enable/disable checkout button
     document.getElementById('checkoutBtn').disabled = cartItems.length === 0;
@@ -97,7 +97,7 @@ function proceedToCheckout() {
     if (cartItems.length === 0) return;
     
     const { total } = calculateTotals();
-    alert(`Proceeding to checkout with total: $${total.toFixed(2)}`);
+    alert(`Proceeding to checkout with total: BDT ${total.toFixed(2)}`);
     // In a real app, this would redirect to checkout page
 }
 
