@@ -28,7 +28,8 @@ export function loadCartFromStorage() {
                 image: "Product Image"
             }
         ];
-}
+        saveCartToStorage();
+    }
 }
 loadCartFromStorage();
 
@@ -40,6 +41,17 @@ export function saveCartToStorage() {
 // Remove item from cart
 export function removeItem(itemId) {
     cartItems = cartItems.filter(item => item.id !== itemId);
-    renderCart();
 }
+
+// Remove a Item from Cart By Id
+export function RemoveByIdFromCart(itemId){
+    const tempCart = []
+    cartItems.forEach((eachItem)=>{
+        if(eachItem.id !== itemId ){
+            tempCart.push(eachItem)
+        }
+    });
+    cartItems = tempCart;
+    saveCartToStorage();
+};
     

@@ -1,4 +1,4 @@
-import {cartItems, saveCartToStorage} from '../Data/cart.js';
+import {cartItems, saveCartToStorage, RemoveByIdFromCart} from '../Data/cart.js';
 
 // Calculate totals
 function calculateTotals() {
@@ -52,7 +52,7 @@ function generateCartItemHTML(item) {
                             </svg>
                         </button>
                     </div>
-                    <button class="remove-btn js_RemoveButton" onclick="removeItem(${item.id})">Remove</button>
+                    <button class="remove-btn js_RemoveButton" data-cart-item-id="${item.id}">Remove</button>
                 </div>
             </div>
             <div class="item-total">BDT ${(item.price * item.quantity).toFixed(2)}</div>
@@ -90,7 +90,16 @@ function renderCart() {
 
     // Enable/disable checkout button
     document.getElementById('checkoutBtn').disabled = cartItems.length === 0;
-}
+
+
+    // Adding Event listener to Each Remove Button
+    document.querySelectorAll('.js_RemoveButton').forEach((EachRemoveButton)=>{
+        EachRemoveButton.addEventListener('click',()=>{
+            const cartItemId =  parseInt(EachRemoveButton.dataset.cartItemId);
+            RemoveByIdFromCart(cartItemId);
+        });
+    });
+};
 
 // Proceed to checkout
 function proceedToCheckout() {
