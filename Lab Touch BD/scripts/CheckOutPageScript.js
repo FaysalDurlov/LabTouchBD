@@ -1,4 +1,4 @@
-import {cartItems, saveCartToStorage, RemoveByIdFromCart} from '../Data/cart.js';
+import {cartItems, RemoveByIdFromCart, findItemInCart, UpdateCartItemQuantity} from '../Data/cart.js';
 
 // Calculate totals
 function calculateTotals() {
@@ -8,25 +8,6 @@ function calculateTotals() {
     const total = subtotal + shipping + tax;
 
     return { subtotal, shipping, tax, total };
-}
-
-// Update quantity
-function updateQuantity(itemId, newQuantity) {
-    if (newQuantity <= 0) {
-        removeItem(itemId);
-        return;
-    }
-    const item = cartItems.find(item => item.id === itemId);
-    if (item) {
-        item.quantity = newQuantity;
-        renderCart();
-    }
-}
-
-// Remove item from cart
-function removeItem(itemId) {
-    cartItems = cartItems.filter(item => item.id !== itemId);
-    renderCart();
 }
 
 // Generate cart item HTML
@@ -39,14 +20,14 @@ function generateCartItemHTML(item) {
                 <div class="item-price">BDT ${item.price.toFixed(2)} each</div>
                 <div class="item-actions">
                     <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>
+                        <button class="quantity-btn js-UpdateQuantity-neg-Button" data-cart-item-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : ''}>
                             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M5 12h14"/>
                             </svg>
                         </button>
                         <input type="number" class="quantity-input" value="${item.quantity}" min="1" 
                                onchange="updateQuantity(${item.id}, parseInt(this.value))" />
-                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
+                        <button class="quantity-btn js-UpdateQuantity-pos-Button" data-cart-item-id="${item.id}">
                             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 5v14M5 12h14"/>
                             </svg>
@@ -96,7 +77,30 @@ function renderCart() {
     document.querySelectorAll('.js_RemoveButton').forEach((EachRemoveButton)=>{
         EachRemoveButton.addEventListener('click',()=>{
             const cartItemId =  parseInt(EachRemoveButton.dataset.cartItemId);
-            RemoveByIdFromCart(cartItemId);
+            RemoveByIdFromCart(cartItemId); // Removing a cart item by Using its ID
+            renderCart();
+        });
+    });
+    
+    // Adding Even Listener to all the - sign Button to Update Cart
+    document.querySelectorAll('.js-UpdateQuantity-neg-Button').forEach((EachUpdateNegButton)=>{
+        EachUpdateNegButton.addEventListener('click',()=>{
+            const cartItemId = parseInt(EachUpdateNegButton.dataset.cartItemId);
+            const matchedItemInCart = findItemInCart(cartItemId);
+            const prevQuantity = matchedItemInCart.quantity;
+            UpdateCartItemQuantity(cartItemId,prevQuantity-1);
+            renderCart();
+        });
+    });
+
+    // Adding Even Listener to all the + sign Button to Update Cart
+    document.querySelectorAll('.js-UpdateQuantity-pos-Button').forEach((EachUpdatePosButton)=>{
+        EachUpdatePosButton.addEventListener('click',()=>{
+            const cartItemId = parseInt(EachUpdatePosButton.dataset.cartItemId);
+            const matchedItemInCart = findItemInCart(cartItemId);
+            const prevQuantity = matchedItemInCart.quantity;
+            UpdateCartItemQuantity(cartItemId,prevQuantity+1);
+            renderCart();
         });
     });
 };
@@ -109,18 +113,4 @@ function proceedToCheckout() {
     alert(`Proceeding to checkout with total: BDT ${total.toFixed(2)}`);
     // In a real app, this would redirect to checkout page
 }
-
-// Override update and remove functions to save to storage
-const originalUpdateQuantity = updateQuantity;
-const originalRemoveItem = removeItem;
-
-updateQuantity = function(itemId, newQuantity) {
-    originalUpdateQuantity(itemId, newQuantity);
-    saveCartToStorage();
-};
-
-removeItem = function(itemId) {
-    originalRemoveItem(itemId);
-    saveCartToStorage();
-};
 renderCart();

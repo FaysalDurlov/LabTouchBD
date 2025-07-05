@@ -1,6 +1,5 @@
 export let cartItems;
 
-
 // Load cart from localStorage (if available)
 export function loadCartFromStorage() {
     cartItems = JSON.parse(localStorage.getItem('shoppingCart'));
@@ -38,10 +37,6 @@ export function saveCartToStorage() {
     localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
 }
 
-// Remove item from cart
-export function removeItem(itemId) {
-    cartItems = cartItems.filter(item => item.id !== itemId);
-}
 
 // Remove a Item from Cart By Id
 export function RemoveByIdFromCart(itemId){
@@ -54,4 +49,24 @@ export function RemoveByIdFromCart(itemId){
     cartItems = tempCart;
     saveCartToStorage();
 };
-    
+
+// Update Quantity of the items in the Cart
+export function UpdateCartItemQuantity(ItemId, newQuantity){
+    cartItems.forEach((EachCartItem)=>{
+        if(EachCartItem.id === ItemId){
+            EachCartItem.quantity = newQuantity
+        };
+    });
+    saveCartToStorage();
+};
+
+// Search an Item In the cart and returns
+export function findItemInCart(itemId){
+    let matchedItem;
+    cartItems.forEach((eachItem)=>{
+        if(eachItem.id === itemId){
+            matchedItem = eachItem;
+        }
+    });
+    return matchedItem;
+};
