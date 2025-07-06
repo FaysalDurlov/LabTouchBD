@@ -1,4 +1,7 @@
+import {getProductById} from "./products.js";
+
 export let cartItems;
+export let TotalcartItemsCount;
 
 // Load cart from localStorage (if available)
 export function loadCartFromStorage() {
@@ -29,14 +32,39 @@ export function loadCartFromStorage() {
         ];
         saveCartToStorage();
     }
+    TotalcartItemsCount = cartItems.length;
 }
 loadCartFromStorage();
+
+//Add Item To the Cart Using item Id
+export function addToCartByItemId(itemId){
+    let MatchedItemInCart;
+    cartItems.forEach((EachItemInCart)=>{
+        if(EachItemInCart.id === itemId){
+            MatchedItemInCart = EachItemInCart;
+        };
+    });
+    if(MatchedItemInCart){
+        MatchedItemInCart.quantity +=1
+    }else{
+        let product = getProductById(itemId);
+        cartItems.push({
+            id: itemId,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+            image: "Product Image"
+        })
+        TotalcartItemsCount+=1;
+    }
+    saveCartToStorage();
+}
+
 
 // Save cart to localStorage
 export function saveCartToStorage() {
     localStorage.setItem('shoppingCart', JSON.stringify(cartItems));
 }
-
 
 // Remove a Item from Cart By Id
 export function RemoveByIdFromCart(itemId){

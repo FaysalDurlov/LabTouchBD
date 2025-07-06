@@ -1,7 +1,8 @@
 import {products} from "../Data/products.js";
+import {TotalcartItemsCount, addToCartByItemId} from "../Data/cart.js";
 
-let cartCount = 0;
 let filteredProducts = [...products];
+let timeOutId;
 
 // Generate star rating HTML
 function generateStars(rating) {
@@ -43,13 +44,13 @@ function generateProductCard(product) {
                     <span class="current-price">BDT ${product.price}</span>
                     ${product.originalPrice ? `<span class="original-price">BDT ${product.originalPrice}</span>` : ''}
                 </div>
-                <button class="add-to-cart" onclick="addToCart(${product.id})">
+                <button class="add-to-cart js_add_to_cart_button" data-product-id="${product.id}">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="8" cy="21" r="1"></circle>
                         <circle cx="19" cy="21" r="1"></circle>
                         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
                     </svg>
-                    Add to Cart
+                    <span class="addToCartButtonText_${product.id}">Add to Cart</span>
                 </button>
             </div>
         </div>
@@ -60,7 +61,25 @@ function generateProductCard(product) {
 function renderProducts(productsToRender = filteredProducts) {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = productsToRender.map(product => generateProductCard(product)).join('');
+
+
+    // adding Event Listener to all the Add to Cart Button
+    document.querySelectorAll('.js_add_to_cart_button').forEach((EachAddToCartButton)=>{
+        EachAddToCartButton.addEventListener('click',()=>{
+            const productId = parseInt(EachAddToCartButton.dataset.productId);
+            addToCartByItemId(productId);
+
+            // Product Add to Cart Alert
+            // Todo_ Alert can't handle Multiple Added(need to work on the Sequence)
+            document.querySelector(`.addToCartButtonText_${productId}`).innerHTML = 'Added';
+            clearTimeout(timeOutId);
+            timeOutId = setTimeout(()=>{
+                document.querySelector(`.addToCartButtonText_${productId}`).innerHTML = 'Add to Cart';
+              },2000);
+        });
+    });
 }
+
 
 // Search functionality
 function searchProducts() {
@@ -69,16 +88,6 @@ function searchProducts() {
         product.name.toLowerCase().includes(searchTerm)
     );
     renderProducts();
-}
-
-// Add to cart functionality
-function addToCart(productId) {
-    cartCount++;
-    document.getElementById('cartCount').textContent = cartCount;
-    
-    // Find product name for notification
-    const product = products.find(p => p.id === productId);
-    alert(`${product.name} added to cart!`);
 }
 
 // Toggle wishlist

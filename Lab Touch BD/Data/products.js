@@ -97,3 +97,13 @@ export const products = [
         reviews: 45,
     },
 ];
+
+export function getProductById(productId){
+    let matchedProduct;
+    products.forEach((eachProduct)=>{
+        if(eachProduct.id === productId){
+            matchedProduct = eachProduct
+        };
+    });
+    return matchedProduct;
+}
